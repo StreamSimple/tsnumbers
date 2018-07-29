@@ -1,9 +1,10 @@
 import {IllegalNumberException} from './illegalnumber';
-import {isInteger} from './numutils';
+
+export const MAX_INT_VALUE = 0x7FFFFFFF;
+export const INT_MASK = 0xFFFFFFFF;
+export const SIGN_BIT_MASK = 0x80000000;
 
 export class UInt {
-  public static readonly INT_MASK = 0xFFFFFFFF;
-
   public constructor(private val: number) {
     // Assuming this is valid input for now
 
@@ -11,17 +12,17 @@ export class UInt {
       throw new IllegalNumberException("The given number cannot be negative.");
     }
 
-    if (!isInteger(val)) {
+    if (!isUInt(val)) {
       throw new IllegalNumberException("The given number must be an integer.");
     }
   }
 
   public add(that: UInt): UInt {
-    return new UInt((this.val + that.val) & UInt.INT_MASK);
+    return new UInt(maskUInt(this.val + that.val));
   }
 
   public sub(that: UInt): UInt {
-    return new UInt((this.val - that.val) & UInt.INT_MASK);
+    return new UInt(maskUInt(this.val - that.val));
   }
 
   public toString(): string {
@@ -31,4 +32,19 @@ export class UInt {
   public toHexString(): string {
     return this.val.toString(16);
   }
+}
+
+export function maskUInt(val: number): number {
+  let hasSignBit = (val & SIGN_BIT_MASK) !== 0;
+  let maskedVal = val & MAX_INT_VALUE;
+
+  if (hasSignBit) {
+    maskedVal += SIGN_BIT_MASK;
+  }
+
+  return maskedVal;
+}
+
+export function isUInt(val: number): boolean {
+  return maskUInt(val) === val;
 }
