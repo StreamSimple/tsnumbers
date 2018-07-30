@@ -43,6 +43,23 @@ describe('UInt', () => {
     })
   });
 
+  describe('mult tests', () => {
+    it('should multiply small integers correctly.', () => {
+      let actual = new UInt(1000).mult(new UInt(123)).toString();
+      expect(actual).to.eq('123000');
+    });
+
+    it('should overflow correctly 1', () => {
+      let actual = new UInt(0x00FFFF00).mult(new UInt(0x00001000)).toHexString();
+      expect(actual).to.eq('fff00000');
+    });
+
+    it('should overflow correctly 2', () => {
+      let actual = new UInt(0xFFFFFFFF).mult(new UInt(0x10000000)).toHexString();
+      expect(actual).to.eq('f0000000');
+    });
+  });
+
   describe('maskUInt tests', () => {
     it('should mask 32 bits correct.y.', () => {
       let val = 0xFEDCA987;
