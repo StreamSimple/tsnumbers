@@ -25,6 +25,10 @@ export class UInt {
     return new UInt(maskUInt(this.val - that.val));
   }
 
+  public mult(that: UInt): UInt {
+    return new UInt(maskUInt(this.val * that.val));
+  }
+
   public toString(): string {
     return this.val.toString();
   }
