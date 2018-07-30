@@ -36,6 +36,10 @@ export class UInt {
   public toHexString(): string {
     return this.val.toString(16);
   }
+
+  public toNumber(): number {
+    return this.val;
+  }
 }
 
 /**
