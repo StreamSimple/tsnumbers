@@ -34,6 +34,11 @@ export class UInt {
   }
 }
 
+/**
+ * Note this method can only mask 52 bit or smaller numbers correctly.
+ * @param {number} val The number to bit mask.
+ * @returns {number} A 32 bit number.
+ */
 export function maskUInt(val: number): number {
   let hasSignBit = (val & SIGN_BIT_MASK) !== 0;
   let maskedVal = val & MAX_INT_VALUE;
