@@ -26,6 +26,23 @@ describe('UInt', () => {
     })
   });
 
+  describe('sub tests', () => {
+    it('should subtract a smaller integer correctly', () => {
+      let actual = new UInt(1000).sub(new UInt(123)).toString();
+      expect(actual).to.eq('877');
+    });
+
+    it('should underflow correctly', () => {
+      let actual = new UInt(1000).sub(new UInt(2155)).toHexString();
+      expect(actual).to.eq('fffffb7d');
+    });
+
+    it('should handle subtracting largest value correctly.', () => {
+      let actual = new UInt(0).sub(new UInt(0xFFFFFFFF)).toString();
+      expect(actual).to.eq('1');
+    })
+  });
+
   describe('maskUInt tests', () => {
     it('should mask 32 bits correct.y.', () => {
       let val = 0xFEDCA987;
