@@ -60,8 +60,15 @@ describe('UInt', () => {
     });
   });
 
+  describe('xor tests', () => {
+    it('should xor bits correctly.', () => {
+      let actual = new UInt(0xF5).xor(new UInt(0xFA)).toNumber();
+      expect(actual).to.eq(0xF);
+    });
+  });
+
   describe('maskUInt tests', () => {
-    it('should mask 32 bits correct.y.', () => {
+    it('should mask 32 bits correctly.', () => {
       let val = 0xFEDCA987;
       expect(maskUInt(val)).to.eq(val);
     });

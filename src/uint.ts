@@ -29,6 +29,10 @@ export class UInt {
     return new UInt(maskUInt(this.val * that.val));
   }
 
+  public xor(that: UInt): UInt {
+    return new UInt(this.val ^ that.val);
+  }
+
   public toString(): string {
     return this.val.toString();
   }
