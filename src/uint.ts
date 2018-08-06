@@ -5,6 +5,9 @@ export const INT_MASK = 0xFFFFFFFF;
 export const SIGN_BIT_MASK = 0x80000000;
 
 export class UInt {
+  public static readonly MAX_UINT_NUMBER = 0xFFFFFFFF;
+  public static readonly MAX_UINT = new UInt(0xFFFFFFFF);
+
   public constructor(private val: number) {
     // Assuming this is valid input for now
 
