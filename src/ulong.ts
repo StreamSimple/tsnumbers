@@ -37,6 +37,10 @@ export class ULong {
     return new ULong(this.bigInteger.xor(that.bigInteger));
   }
 
+  public toBigInt(): BigInteger {
+    return this.bigInteger;
+  }
+
   public toString(radix?: number): string {
     return this.bigInteger.toString(radix);
   }
