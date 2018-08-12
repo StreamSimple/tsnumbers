@@ -5,30 +5,30 @@ import bigInt = require('big-integer');
 import {BigInteger} from 'big-integer';
 
 export class ULong {
-  public static MASK_LONG = bigInt('ffffffffffffffff');
-  public static MASK_MS32B = bigInt('ffffffff00000000');
-  public static MASK_LS32B = bigInt('00000000ffffffff');
+  public static MASK_LONG = bigInt('ffffffffffffffff', 16);
+  public static MASK_MS32B = bigInt('ffffffff00000000', 16);
+  public static MASK_LS32B = bigInt('00000000ffffffff', 16);
 
   private readonly msb: UInt;
   private readonly lsb: UInt;
 
   private constructor(private readonly bigInteger: BigInteger) {
-    this.msb = new UInt(bigInteger.xor(ULong.MASK_MS32B).shiftRight(bigInt(32)).toJSNumber());
-    this.lsb = new UInt(bigInteger.xor(ULong.MASK_LS32B).toJSNumber());
+    this.msb = new UInt(bigInteger.and(ULong.MASK_MS32B).divide(bigInt(2).pow(32)).toJSNumber());
+    this.lsb = new UInt(bigInteger.and(ULong.MASK_LS32B).toJSNumber());
   }
 
   public getMs32b(): UInt {
     return this.msb;
   }
 
-  public getls32b(): UInt {
+  public getLs32b(): UInt {
     return this.lsb;
   }
 
   public add(that: ULong): ULong {
     let newBigInteger = this.bigInteger.
       add(that.bigInteger).
-      xor(ULong.MASK_LONG);
+      and(ULong.MASK_LONG);
 
     return new ULong(newBigInteger);
   }
