@@ -1,5 +1,5 @@
 import * as chai from 'chai';
-import {isUInt, maskUInt, UInt} from './uint';
+import {UInt} from './uint';
 
 const expect = chai.expect;
 
@@ -11,17 +11,17 @@ describe('UInt', () => {
     });
 
     it('should add two large integers correctly', () => {
-      let actual = new UInt(0x0FED1000).add(new UInt(0x00001234)).toHexString();
+      let actual = new UInt(0x0FED1000).add(new UInt(0x00001234)).toString(16);
       expect(actual).to.eq('fed2234');
     });
 
     it ('should handle sign bit correctly', () => {
-      let actual = new UInt(0x40000000).add(new UInt(0x40000001)).toHexString();
+      let actual = new UInt(0x40000000).add(new UInt(0x40000001)).toString(16);
       expect(actual).to.eq('80000001');
     });
 
     it ('should handle overflow correctly', () => {
-      let actual = new UInt(0xF0000000).add(new UInt(0x20000001)).toHexString();
+      let actual = new UInt(0xF0000000).add(new UInt(0x20000001)).toString(16);
       expect(actual).to.eq('10000001');
     })
   });
@@ -33,7 +33,7 @@ describe('UInt', () => {
     });
 
     it('should underflow correctly', () => {
-      let actual = new UInt(1000).sub(new UInt(2155)).toHexString();
+      let actual = new UInt(1000).sub(new UInt(2155)).toString(16);
       expect(actual).to.eq('fffffb7d');
     });
 
@@ -50,12 +50,12 @@ describe('UInt', () => {
     });
 
     it('should overflow correctly 1', () => {
-      let actual = new UInt(0x00FFFF00).mult(new UInt(0x00001000)).toHexString();
+      let actual = new UInt(0x00FFFF00).mult(new UInt(0x00001000)).toString(16);
       expect(actual).to.eq('fff00000');
     });
 
     it('should overflow correctly 2', () => {
-      let actual = new UInt(0xFFFFFFFF).mult(new UInt(0x10000000)).toHexString();
+      let actual = new UInt(0xFFFFFFFF).mult(new UInt(0x10000000)).toString(16);
       expect(actual).to.eq('f0000000');
     });
   });
@@ -70,30 +70,30 @@ describe('UInt', () => {
   describe('maskUInt tests', () => {
     it('should mask 32 bits correctly.', () => {
       let val = 0xFEDCA987;
-      expect(maskUInt(val)).to.eq(val);
+      expect(UInt.maskUInt(val)).to.eq(val);
     });
 
     it('should mask more than 32 bits correctly.', () => {
       let val = 0xFEDCA987FEDCA;
-      expect(maskUInt(val)).to.eq(0x987FEDCA);
+      expect(UInt.maskUInt(val)).to.eq(0x987FEDCA);
     });
 
     it('should mask negative numbers correctly.', () => {
-      expect(maskUInt(-2)).to.eq(0xFFFFFFFE);
+      expect(UInt.maskUInt(-2)).to.eq(0xFFFFFFFE);
     });
   });
 
   describe('isInteger tests', () => {
     it('should say the number is an unsigned integer.', () => {
-      expect(isUInt(0x8FFFFFFF)).to.be.true;
+      expect(UInt.isUInt(0x8FFFFFFF)).to.be.true;
     });
 
     it('should say the number is not an unsigned integer.', () => {
-      expect(isUInt(-1)).to.be.false;
+      expect(UInt.isUInt(-1)).to.be.false;
     });
 
     it('should say that doubles are not unsigned integers.', () => {
-      expect(isUInt(1.1)).to.be.false;
+      expect(UInt.isUInt(1.1)).to.be.false;
     });
   });
 });
