@@ -29,7 +29,11 @@ export class UInt {
   }
 
   public mult(that: UInt): UInt {
-    return new UInt(UInt.maskUInt(this.val * that.val));
+    let result = bigInt(this.val).
+      multiply(bigInt(that.val)).
+      and(UInt.MAX_UINT_BIGIINT).
+      toJSNumber()
+    return new UInt(result);
   }
 
   public xor(that: UInt): UInt {
