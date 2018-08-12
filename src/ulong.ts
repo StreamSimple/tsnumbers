@@ -1,51 +1,54 @@
 import {IllegalNumberException} from './illegalnumber';
 import {isWhole} from './numberutils';
-import {maskUInt, UInt} from './uint';
+import {UInt} from './uint';
+import bigInt = require('big-integer');
+import {BigInteger} from 'big-integer';
 
 export class ULong {
-  private msb: UInt;
-  private lsb: UInt;
+  public static MASK_LONG = bigInt('ffffffffffffffff');
+  public static MASK_MS32B = bigInt('ffffffff00000000');
+  public static MASK_LS32B = bigInt('00000000ffffffff');
 
-  /**
-   * @param {string} val A hex string.
-   */
-  private constructor(lsb: UInt, msb: UInt) {
+  private readonly msb: UInt;
+  private readonly lsb: UInt;
+
+  private constructor(private readonly bigInteger: BigInteger) {
+    this.msb = new UInt(bigInteger.xor(ULong.MASK_MS32B).shiftRight(bigInt(32)).toJSNumber());
+    this.lsb = new UInt(bigInteger.xor(ULong.MASK_LS32B).toJSNumber());
+  }
+
+  public getMs32b(): UInt {
+    return this.msb;
+  }
+
+  public getls32b(): UInt {
+    return this.lsb;
   }
 
   public add(that: ULong): ULong {
-    let newLsbNum = this.lsb.toNumber() + that.lsb.toNumber();
-    let newLsb = new UInt(maskUInt(newLsbNum));
-    let newMsb = new UInt(0);
+    let newBigInteger = this.bigInteger.
+      add(that.bigInteger).
+      xor(ULong.MASK_LONG);
 
-    if (newLsbNum > UInt.MAX_UINT_NUMBER) {
-      newMsb = new UInt(1);
-    }
-
-    newMsb = newMsb.add(this.msb).add(that.msb);
-    return new ULong(newLsb, newMsb);
+    return new ULong(newBigInteger);
   }
 
   public xor(that: ULong): ULong {
-    return new ULong(this.msb.xor(that.msb), this.lsb.xor(that.lsb));
+    return new ULong(this.bigInteger.xor(that.bigInteger));
   }
 
-  public toHexString(): string {
-    return this.msb.toHexString() + this.lsb.toHexString();
+  public toString(radix?: number): string {
+    return this.bigInteger.toString(radix);
   }
 
-  public static parseLong(val: string): ULong {
-    // Assuming this is valid input for now
-    let msb = new UInt(0);
+  public static parseLong(val: string, radix?: number): ULong {
+    let parsedInt = bigInt(val, radix);
 
-    if (val.length > 8) {
-      let msbNumDigits = val.length - 8;
-      let msbHexString = val.substr(0, msbNumDigits);
-      msb = new UInt(parseInt(msbHexString, 16));
-      val = val.substr(msbNumDigits);
+    if (parsedInt.bitLength().toJSNumber() > 64) {
+      throw new IllegalNumberException("The given number cannot be larger than 64 bits.");
     }
 
-    let lsb = new UInt(parseInt(val));
-    return new ULong(lsb, msb);
+    return new ULong(parsedInt);
   }
 
   public static createLong(val: number): ULong {
@@ -57,6 +60,6 @@ export class ULong {
       throw new IllegalNumberException("The given number must be a whole numbber.");
     }
 
-    return ULong.parseLong(val.toString());
+    return new ULong(bigInt(val));
   }
 }
