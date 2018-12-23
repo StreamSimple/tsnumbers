@@ -32,7 +32,7 @@ export class UInt {
     let result = bigInt(this.val).
       multiply(bigInt(that.val)).
       and(UInt.MAX_UINT_BIGIINT).
-      toJSNumber()
+      toJSNumber();
     return new UInt(result);
   }
 
